@@ -167,6 +167,11 @@ public class Parser {
     // This function corresponds to the "relop" production rule in grammar.txt
     func parseBooleanExpression() throws -> BooleanExpression? {
         // YOU FILL IN HERE
+        // what you need to do here is write each case
+        // if you see a relop for "<" this needs to do something
+        // if you see ">" then it does something represetning greater than
+        //
+    
         return nil
     }
     
@@ -175,18 +180,44 @@ public class Parser {
     // Parse a GOSUB statement from the "statement" production rule in grammar.txt
     func parseGoSub(lineNumber: Int16) throws -> GoSubCall? {
         // YOU FILL IN HERE
+        // for this we will be using case .gosub and .returnT
+        if case let .gosub(range) = current {
+            var lastRange = range
+            while true{
+                index += 1
+                if case let .returnT(range) = current {
+                    <#body#>
+                }else{
+                    throw ParserError.ParseError(explanation: <#T##String#>, token: <#T##Token?#>)
+                }
+            }
+        }
         return nil
     }
     
     // Parse a LET statement from the "statement" production rule in grammar.txt
     func parseLet(lineNumber: Int16) throws -> VarSet? {
         // YOU FILL IN HERE
+        // for this .letT
+        if case let .letT(startRange) = current {
+            var variable: Expression?
+            var lastRange = startRange
+            
+            if case let expr = try parseExpression(){
+                index += 1
+                variable = expr
+            }else {
+                throw ParserError.ParseError(explanation: "Expect expression couldn't not find", token: current)
+            }
+            return VarSet(value: variable, line: lineNumber, range: startRange.upperBound..<lastRange.lowerBound)
+        }
         return nil
     }
     
     // Parse a GOTO statement from the "statement" production rule in grammar.txt
     func parseGoTo(lineNumber: Int16) throws -> GoToCall? {
         // YOU FILL IN HERE
+        // use the case .goto and .number
         return nil
     }
     
