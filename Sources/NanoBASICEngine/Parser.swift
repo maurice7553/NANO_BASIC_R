@@ -170,7 +170,25 @@ public class Parser {
         // what you need to do here is write each case
         // if you see a relop for "<" this needs to do something
         // if you see ">" then it does something represetning greater than
-        //
+        //you want to first chack the node of the relop
+        // then for each case incremtent the index by one then
+        // fvthen check the left and right node
+        // then return the Boolean expression and check for errors
+        switch current {
+        case let .lessThan(range):
+            index += 1
+        case let .greaterThan(range):
+            index += 1
+        case let .greaterThanEqual(range):
+            index += 1
+        case let .lessThanEqual(range):
+            index += 1
+        case let .notEqual(range):
+            index += 1
+        default:
+            throw ParserError.ParseError(explanation: "Invalid factor for parsing", token: current) // unary or single value
+            
+        }
         return nil
     }
     
@@ -182,14 +200,8 @@ public class Parser {
         // for this we will be using case .gosub and .returnT
         if case let .gosub(range) = current {
             var lastRange = range
-            while true{
-                index += 1
-                if case let .returnT(range) = current {
-                    <#body#>
-                }else{
-                    throw ParserError.ParseError(explanation: <#T##String#>, token: <#T##Token?#>)
-                }
-            }
+            index += 1
+            return GoSubCall(gotoLine: lineNumber, line: lineNumber, range: range.upperBound..<lastRange.lowerBound)
         }
         return nil
     }
@@ -199,16 +211,12 @@ public class Parser {
         // YOU FILL IN HERE
         // for this .letT
         if case let .letT(startRange) = current {
-            var variable: Expression?
             var lastRange = startRange
-            
-            if case let expr = try parseExpression(){
+            if case let .variable(range, name) = current {
+                var variable: Expression?
                 index += 1
-                variable = expr
-            }else {
-                throw ParserError.ParseError(explanation: "Expect expression couldn't not find", token: current)
+                return VarSet(name: name, value: variable, line: lineNumber, range: startRange.upperBound..<range.lowerBound)
             }
-            return VarSet(value: variable, line: lineNumber, range: startRange.upperBound..<lastRange.lowerBound)
         }
         return nil
     }
@@ -217,12 +225,22 @@ public class Parser {
     func parseGoTo(lineNumber: Int16) throws -> GoToCall? {
         // YOU FILL IN HERE
         // use the case .goto and .number
+        if case let .goto(startRange) = current {
+            var lastRange = startRange
+            index += 1
+            return GoToCall(gotoLine: lineNumber, line: lineNumber, range: startRange.upperBound..<lastRange.lowerBound)
+        }
         return nil
     }
     
     // Parse an IF statement from the "statement" production rule in grammar.txt
     func parseIf(lineNumber: Int16) throws -> IfStatement? {
         // YOU FILL IN HERE
+        if case let .ifT(range) = current {
+            var lastrange = range
+            index += 1
+            return IfStatement(booleanExpression: <#T##BooleanExpression#>, thenStatement: <#T##any Statement#>, line: <#T##Int16#>, range: <#T##Range<String.Index>#>)
+        }
         return nil
     }
     

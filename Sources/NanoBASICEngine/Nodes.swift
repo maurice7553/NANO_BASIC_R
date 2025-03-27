@@ -72,7 +72,6 @@ public struct IfStatement: Statement {
     public let line: Int16
     public let range: Range<String.Index>
 }
-
 // The BooleanExpression used by an IF statement
 public struct BooleanExpression: CustomDebugStringConvertible {
     let operation: Token

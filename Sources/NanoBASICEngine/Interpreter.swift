@@ -90,6 +90,17 @@ extension BASICPlayer {
             }
             statementIndex += 1
         // YOU FILL IN HERE the other cases: LET, IF, GOTO, GOSUB, RETURN
+        case let LetStatement as VarSet:
+            let letIndex = findLineIndex(lineNumber: LetStatement.line)
+            if let expr = LetStatement.value as? Expression{
+                evaluate(expression: expr)
+            }
+        case let ifStatement as IfStatement:
+            if let boolexpr = ifStatement.booleanExpression{
+                evaluate(booleanExpression: boolexpr)
+            }
+        case let gotoStatement as GoToCall:
+            if let
         default:
             break
         }
@@ -107,6 +118,14 @@ extension BASICPlayer {
     // evaluating each of the two operands
     public func evaluate(booleanExpression: BooleanExpression) -> Bool {
         // YOU FILL IN HERE
+        switch booleanExpression{
+        case let boolop as UnaryOperation:
+            switch boolop.operation {
+            case .equal:
+                return evaluate(booleanExpression: boolop.operation = "==")
+            }
+            
+        }
         return false
     }
     
