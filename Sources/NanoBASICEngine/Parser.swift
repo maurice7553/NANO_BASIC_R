@@ -174,7 +174,7 @@ public class Parser {
         // then for each case incremtent the index by one then
         // fvthen check the left and right node
         // then return the Boolean expression and check for errors
-        switch current {
+        /*switch current {
         case let .lessThan(range):
             index += 1
         case let .greaterThan(range):
@@ -187,6 +187,8 @@ public class Parser {
             index += 1
         default:
             throw ParserError.ParseError(explanation: "Invalid factor for parsing", token: current) // unary or single value
+          }*/
+        if let down = try {
             
         }
         return nil
@@ -213,7 +215,7 @@ public class Parser {
         if case let .letT(startRange) = current {
             var lastRange = startRange
             if case let .variable(range, name) = current {
-                var variable: Expression?
+                var variable: Expression
                 index += 1
                 return VarSet(name: name, value: variable, line: lineNumber, range: startRange.upperBound..<range.lowerBound)
             }
@@ -239,7 +241,9 @@ public class Parser {
         if case let .ifT(range) = current {
             var lastrange = range
             index += 1
-            return IfStatement(booleanExpression: <#T##BooleanExpression#>, thenStatement: <#T##any Statement#>, line: <#T##Int16#>, range: <#T##Range<String.Index>#>)
+            if var down = try parseBooleanExpression(){
+                return IfStatement(booleanExpression: down, thenStatement: <#T##any Statement#>, line: lineNumber, range: range.upperBound..<lastrange.lowerBound)
+            }
         }
         return nil
     }

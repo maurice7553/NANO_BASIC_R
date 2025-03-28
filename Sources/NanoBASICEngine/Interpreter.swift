@@ -92,15 +92,15 @@ extension BASICPlayer {
         // YOU FILL IN HERE the other cases: LET, IF, GOTO, GOSUB, RETURN
         case let LetStatement as VarSet:
             let letIndex = findLineIndex(lineNumber: LetStatement.line)
-            if let expr = LetStatement.value as? Expression{
-                evaluate(expression: expr)
-            }
-        case let ifStatement as IfStatement:
-            if let boolexpr = ifStatement.booleanExpression{
-                evaluate(booleanExpression: boolexpr)
-            }
+            statementIndex += 1
+            variableTable[LetStatement.name.lowercased()] = LetStatement.line
+            evaluate(expression: LetStatement.value)
         case let gotoStatement as GoToCall:
-            if let
+            statementIndex += 1
+            subroutineStack.pop()
+        case let goSubStatment as GoSubCall:
+            statementIndex += 1
+            subroutineStack.push(Int(goSubStatment.gotoLine))
         default:
             break
         }
@@ -118,13 +118,19 @@ extension BASICPlayer {
     // evaluating each of the two operands
     public func evaluate(booleanExpression: BooleanExpression) -> Bool {
         // YOU FILL IN HERE
-        switch booleanExpression{
-        case let boolop as UnaryOperation:
-            switch boolop.operation {
-            case .equal:
-                return evaluate(booleanExpression: boolop.operation = "==")
-            }
-            
+        switch booleanExpression.operation{
+        case .equal:
+            evaluate(expression: booleanExpression.left) == evaluate(expression: booleanExpression.right)
+        case .notEqual:
+            evaluate(expression: booleanExpression.left) != evaluate(expression: booleanExpression.right)
+        case .greaterThan:
+            evaluate(expression: booleanExpression.left) > evaluate(expression: booleanExpression.right)
+        case .lessThan:
+            evaluate(expression: booleanExpression.left) < evaluate(expression: booleanExpression.right)
+        case .greaterThanEqual:
+            evaluate(expression: booleanExpression.left) >= evaluate(expression: booleanExpression.right)
+        case .lessThanEqual:
+            evaluate(expression: booleanExpression.left) <= evaluate(expression: booleanExpression.right)
         }
         return false
     }
